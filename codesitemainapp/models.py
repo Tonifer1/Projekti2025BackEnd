@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 
 #Pohja , lisätään toimintoja tarvittaessa.
-
+#deveploment
 # Artikkelit
 class Category(models.Model):
     header = models.TextField()
