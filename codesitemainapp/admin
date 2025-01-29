@@ -1,0 +1,11 @@
+
+from django.contrib import admin
+from .models import Category,SubCategory,Article,Ketju,Aihealue,Vastaus
+
+
+admin.site.register(Category)
+admin.site.register(SubCategory)
+admin.site.register(Article)
+admin.site.register(Ketju)
+admin.site.register(Aihealue)
+admin.site.register(Vastaus)

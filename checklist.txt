@@ -1,0 +1,30 @@
+
+Use Django 5.0.9
+
+*GITIGNORE
+    s
+
+*VENV:
+    venv - OK
+
+*RIIPPUVUUDET:
+    DRF - OK
+    mssql - 
+    authorization - 
+
+*MALLIT:
+    ER Mallin mukaan ok
+    Migraatiot ok 
+
+*Serializer:
+    Serializer - OK
+
+*urls:
+    Tee ensin ApiViews
+
+*ApiViews:
+
+
+*SETTINGS: 
+    APPS: codesitemainapp lisätty
+    authorization - 
