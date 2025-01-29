@@ -5,7 +5,12 @@ from django.contrib.auth.models import User
 #deveploment
 # Artikkelit
 class Category(models.Model):
+    TYPE_CHOICES = [
+        ('programming', 'Programming Language'),
+        ('platform', 'Platform'),
+    ]
     header = models.TextField()
+    category_type = models.CharField(max_length=20, choices=TYPE_CHOICES)  # Erotetaan ohjelmointi ja alusta
 
 
 class SubCategory(models.Model):
