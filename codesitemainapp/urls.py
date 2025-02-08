@@ -1,3 +1,6 @@
+#Polkumääritykset, ohjataan tänne codesite/urls.py :stä.
+
+
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from .api_views import AihealueViewSet,KetjuViewSet,VastausViewSet
