@@ -1,41 +1,16 @@
-from rest_framework import serializers
-from .models import Category, SubCategory, Article, Ketju, Aihealue, Vastaus
-from django.contrib.auth.models import User
+#Serializers luokat, joilla kootaan tai puretaan JSON tiedot
 
+
+
+from rest_framework import serializers
+from .models import Ketju, Aihealue, Vastaus
+from django.contrib.auth.models import User
 
 # Käyttäjäserializer
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'username']
-
-
-# Kategoriat
-class CategorySerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Category
-        fields = '__all__'
-
-
-class SubCategorySerializer(serializers.ModelSerializer):
-    category = serializers.PrimaryKeyRelatedField(queryset=Category.objects.all())
-    category_data = CategorySerializer(source='category', read_only=True)
-
-    class Meta:
-        model = SubCategory
-        fields = ['id', 'header', 'category', 'category_data']
-
-
-# Artikkelit
-class ArticleSerializer(serializers.ModelSerializer):
-    author = UserSerializer(read_only=True)
-    subcategory = serializers.PrimaryKeyRelatedField(queryset=SubCategory.objects.all())
-    subcategory_data = SubCategorySerializer(source='subcategory', read_only=True)
-
-    class Meta:
-        model = Article
-        fields = '__all__'
-
+        fields = ['id', 'username', 'first_name', 'last_name', 'email', 'is_superuser']
 
 # Foorumi
 class AihealueSerializer(serializers.ModelSerializer):

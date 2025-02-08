@@ -1,6 +1,16 @@
 
 Use Django 5.0.9
 
+urls
+
+    '''
+    # implementoidaan myöhemmin, rakennetaan ensin muu logiikka
+    path('api/login', login_view, name='api_login'),
+    path('api/logout/', logout_view, name='api_logout'),
+    path('api/profile/', api_views.user_profile_view, name='user-progile'),
+    path('api/signup/', api_views.signup, name='signedup')
+    '''
+
 *GITIGNORE
     s
 
@@ -28,3 +38,15 @@ Use Django 5.0.9
 *SETTINGS: 
     APPS: codesitemainapp lisätty
     authorization - 
+
+
+
+MEMO
+#shell
+python manage.py shell
+
+from codesitemainapp.models import Aihealue, Ketju
+
+#testataan tietojen syöttöä
+new_entry = Aihealue.objects.create(header='New Entry')
+new_entry_ketju = Ketju.objects.create(header='New Entry for Ketju')

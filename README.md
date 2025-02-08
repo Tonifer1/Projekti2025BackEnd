@@ -1,1 +1,1 @@
-Careeria projekti 2025
+Deveploment haara.
