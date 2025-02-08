@@ -9,7 +9,7 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ['id', 'username']
 
-
+# region Artikkelit
 # Kategoriat
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
@@ -35,7 +35,7 @@ class ArticleSerializer(serializers.ModelSerializer):
     class Meta:
         model = Article
         fields = '__all__'
-
+# endregion
 
 # Foorumi
 class AihealueSerializer(serializers.ModelSerializer):
