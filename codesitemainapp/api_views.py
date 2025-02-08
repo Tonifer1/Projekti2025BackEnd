@@ -1,8 +1,8 @@
 from django.contrib.auth import authenticate, login, logout
-from codesitemainapp import serializers
-from models import Aihealue,Ketju,Vastaus
-from serializers import AihealueSerializer,KetjuSerializer,VastausSerializer
-from serializers import UserSerializer
+from . import serializers
+from .models import Aihealue,Ketju,Vastaus
+from .serializers import AihealueSerializer,KetjuSerializer,VastausSerializer
+from .serializers import UserSerializer
 from .permissions import IsAdminOrSuperuser #tuotu erillisestä permissions tiedostosta
 
 from django.http import JsonResponse
@@ -34,3 +34,11 @@ class KetjuViewSet(viewsets.ModelViewSet):
         if any(word in nimi for word in self.FORBIDDEN_WORDS) or any(word in sisalto for word in self.FORBIDDEN_WORDS):
             raise serializers.ValidationError("Ketjun nimi tai sisältö sisältää aiheeseen sopimattomia sanoja.")
         serializer.save()
+
+class VastausViewSet(viewsets.ModelViewSet):
+    queryset = Vastaus.objects.all()
+    serializer_class = VastausSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+    def perform_create(self, serializer):
+        return super().perform_create(serializer)

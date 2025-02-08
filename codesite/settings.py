@@ -20,6 +20,8 @@ import mimetypes
 mimetypes.add_type("text/css", ".css", True)
 
 load_dotenv()
+DB_SERVER = os.getenv('DB_SERVER')
+print(f'SQL SERVER: {DB_SERVER}')
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -46,10 +48,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'codesitemainapp'
+    'codesitemainapp',
     'rest_framework',
     'corsheaders',
-    'codesite'
+    'codesite',
 ]
 
 MIDDLEWARE = [
@@ -85,7 +87,7 @@ WSGI_APPLICATION = 'codesite.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
-
+'''
 #sqlite
 DATABASES = {
     'default': {
@@ -107,7 +109,8 @@ DATABASES = {
         'OPTIONS': {
 	            'driver': 'ODBC Driver 17 for SQL Server',
 	        },
-    }'''
+    }
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators

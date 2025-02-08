@@ -2,7 +2,6 @@ from rest_framework import serializers
 from .models import Category, SubCategory, Article, Ketju, Aihealue, Vastaus
 from django.contrib.auth.models import User
 
-
 # Käyttäjäserializer
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
