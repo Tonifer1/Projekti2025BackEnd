@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 
 #Pohja , lisätään toimintoja tarvittaessa.
 #deveploment
+
 # Artikkelit
 class Category(models.Model):
     TYPE_CHOICES = [
