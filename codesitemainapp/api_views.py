@@ -1,3 +1,11 @@
+'''
+Esimerkkejä, muistioksi.
+https://www.django-rest-framework.org/api-guide/permissions/
+https://www.django-rest-framework.org/api-guide/viewsets/
+https://docs.djangoproject.com/en/5.0/topics/db/queries/
+https://github.com/encode/django-rest-framework
+'''
+
 #Api funktiot
 
 #Djangon Kirjastot
@@ -81,4 +89,5 @@ class VastausViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def perform_create(self, serializer):
+        serializer.save(kayttaja=self.request.user)
         return super().perform_create(serializer)
