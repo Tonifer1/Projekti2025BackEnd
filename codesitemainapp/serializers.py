@@ -20,7 +20,8 @@ class AihealueSerializer(serializers.ModelSerializer):
 
 
 class KetjuSerializer(serializers.ModelSerializer):
-    author = UserSerializer(read_only=True)
+    #author = UserSerializer(read_only=True) kunnes saadaan kirjautuminen muutoin syötetään käyttäjä käsin.
+    author = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), required=True) 
     aihealue = serializers.PrimaryKeyRelatedField(queryset=Aihealue.objects.all())
     aihealue_data = AihealueSerializer(source='aihealue', read_only=True)
 

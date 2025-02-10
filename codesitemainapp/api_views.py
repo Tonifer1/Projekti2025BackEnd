@@ -71,7 +71,7 @@ class AihealueViewSet(viewsets.ModelViewSet):
 class KetjuViewSet(viewsets.ModelViewSet):
     queryset = Ketju.objects.all()
     serializer_class = KetjuSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    permission_classes = [permissions.AllowAny]
 
     # voidaan rajoittaa spammausta, eli kontrolli kirosanoille yms, kokeellinen, toisaalta suodatus toimii paremmin frontin puolella.
     # sanoja voidaan lisätä, poistaa tarpeen mukaan.
@@ -87,7 +87,7 @@ class KetjuViewSet(viewsets.ModelViewSet):
 class VastausViewSet(viewsets.ModelViewSet):
     queryset = Vastaus.objects.all()
     serializer_class = VastausSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    permission_classes = [permissions.AllowAny]
 
     def perform_create(self, serializer):
         serializer.save(kayttaja=self.request.user)
@@ -96,7 +96,7 @@ class VastausViewSet(viewsets.ModelViewSet):
 class NoteViewSet(viewsets.ModelViewSet):
     queryset = Notes.objects.all()
     serializer_class = NotesSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.AllowAny]
 
     @action(detail=False, methods=['get'])
     def filter_by_tag(self, request):
