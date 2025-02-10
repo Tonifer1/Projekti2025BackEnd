@@ -1,9 +1,8 @@
 #Asetukset, lisä huomautukset tiedoston lopussa.
-
+import os
 from pathlib import Path
 from datetime import timedelta
 
-import os
 from pathlib import Path
 from dotenv import load_dotenv
 import mimetypes
@@ -12,8 +11,6 @@ mimetypes.add_type("text/css", ".css", True)
 #käytetään dotenv tiedostoa tuomaan sensitiivistä dataa. 
 #dotenv ei pushata git repoon
 load_dotenv()
-DB_SERVER = os.getenv('DB_SERVER')
-print(f'SQL SERVER: {DB_SERVER}')
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
