@@ -1,2 +1,1 @@
-Deveploment haara.
-
+Deveploment haara azureen uppaus

@@ -3,7 +3,7 @@
 
 
 from rest_framework import serializers
-from .models import Ketju, Aihealue, Vastaus
+from .models import Ketju, Aihealue, Vastaus, Notes
 from django.contrib.auth.models import User
 
 # Käyttäjäserializer
@@ -20,7 +20,8 @@ class AihealueSerializer(serializers.ModelSerializer):
 
 
 class KetjuSerializer(serializers.ModelSerializer):
-    author = UserSerializer(read_only=True)
+    #author = UserSerializer(read_only=True) kunnes saadaan kirjautuminen muutoin syötetään käyttäjä käsin.
+    author = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), required=True) 
     aihealue = serializers.PrimaryKeyRelatedField(queryset=Aihealue.objects.all())
     aihealue_data = AihealueSerializer(source='aihealue', read_only=True)
 
@@ -37,3 +38,8 @@ class VastausSerializer(serializers.ModelSerializer):
     class Meta:
         model = Vastaus
         fields = '__all__'
+
+class NotesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Notes
+        fields = ['id', 'header', 'content', 'created', 'updated', 'tags']

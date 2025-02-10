@@ -1,3 +1,11 @@
+'''
+Esimerkkejä, muistioksi.
+https://www.django-rest-framework.org/api-guide/permissions/
+https://www.django-rest-framework.org/api-guide/viewsets/
+https://docs.djangoproject.com/en/5.0/topics/db/queries/
+https://github.com/encode/django-rest-framework
+'''
+
 #Api funktiot
 
 #Djangon Kirjastot
@@ -6,14 +14,15 @@ from django.http import JsonResponse
 
 #luokat , Moduulit
 from . import serializers
-from .models import Aihealue,Ketju,Vastaus,User
-from .serializers import AihealueSerializer,KetjuSerializer,VastausSerializer
+from .models import Aihealue,Ketju,Vastaus,Notes,User
+from .serializers import AihealueSerializer,KetjuSerializer,VastausSerializer,NotesSerializer
 from .serializers import UserSerializer
 from .permissions import IsAdminOrSuperuser #tuotu erillisestä permissions tiedostosta
 
 #DRF kirjastot
 from rest_framework import viewsets, permissions
 from rest_framework.response import Response
+from rest_framework.decorators import action
 
 #Funktiot
 
@@ -62,7 +71,7 @@ class AihealueViewSet(viewsets.ModelViewSet):
 class KetjuViewSet(viewsets.ModelViewSet):
     queryset = Ketju.objects.all()
     serializer_class = KetjuSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    permission_classes = [permissions.AllowAny]
 
     # voidaan rajoittaa spammausta, eli kontrolli kirosanoille yms, kokeellinen, toisaalta suodatus toimii paremmin frontin puolella.
     # sanoja voidaan lisätä, poistaa tarpeen mukaan.
@@ -78,7 +87,24 @@ class KetjuViewSet(viewsets.ModelViewSet):
 class VastausViewSet(viewsets.ModelViewSet):
     queryset = Vastaus.objects.all()
     serializer_class = VastausSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    permission_classes = [permissions.AllowAny]
 
     def perform_create(self, serializer):
+        serializer.save(kayttaja=self.request.user)
         return super().perform_create(serializer)
+    
+class NoteViewSet(viewsets.ModelViewSet):
+    queryset = Notes.objects.all()
+    serializer_class = NotesSerializer
+    permission_classes = [permissions.AllowAny]
+
+    @action(detail=False, methods=['get'])
+    def filter_by_tag(self, request):
+        tag = request.query_params.get('tag', None)
+        if tag:
+            notes = Notes.objects.filter(tags=tag)
+        else:
+            notes = Notes.objects.all()
+            
+        serializer = self.get_serializer(notes, many=True)
+        return Response(serializer.data)
