@@ -29,4 +29,25 @@ class Vastaus(models.Model):
     ketju = models.ForeignKey(Ketju, on_delete=models.CASCADE, related_name="replies")  #jos alkuperäinen julkaisu poistetaan sen julkaisun vastaukset poistetaan.
 
 #Notes osio
-    
+
+class Tags(models.TextChoices):
+    C_SHARP = 'csharp', 'C#'
+    REACT = 'react', 'React'
+    VISUAL_STUDIO = 'visual_studio', 'Visual Studio'
+    DJANGO = 'django', 'Django'
+    PYTHON = 'python', 'Python'
+    PERSONAL = 'personal', 'Personal'
+
+class Notes(models.Model):
+    header = models.TextField()
+    content = models.TextField()
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
+    tags = models.CharField(
+        max_length=20,
+        choices=Tags.choices,
+        default=Tags.PERSONAL
+    )
+
+    def __str__(self):
+        return self.header

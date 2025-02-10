@@ -14,14 +14,15 @@ from django.http import JsonResponse
 
 #luokat , Moduulit
 from . import serializers
-from .models import Aihealue,Ketju,Vastaus,User
-from .serializers import AihealueSerializer,KetjuSerializer,VastausSerializer
+from .models import Aihealue,Ketju,Vastaus,Notes,User
+from .serializers import AihealueSerializer,KetjuSerializer,VastausSerializer,NotesSerializer
 from .serializers import UserSerializer
 from .permissions import IsAdminOrSuperuser #tuotu erillisestä permissions tiedostosta
 
 #DRF kirjastot
 from rest_framework import viewsets, permissions
 from rest_framework.response import Response
+from rest_framework.decorators import action
 
 #Funktiot
 
@@ -91,3 +92,19 @@ class VastausViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(kayttaja=self.request.user)
         return super().perform_create(serializer)
+    
+class NoteViewSet(viewsets.ModelViewSet):
+    queryset = Notes.objects.all()
+    serializer_class = NotesSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    @action(detail=False, methods=['get'])
+    def filter_by_tag(self, request):
+        tag = request.query_params.get('tag', None)
+        if tag:
+            notes = Notes.objects.filter(tags=tag)
+        else:
+            notes = Notes.objects.all()
+            
+        serializer = self.get_serializer(notes, many=True)
+        return Response(serializer.data)

@@ -3,7 +3,7 @@
 
 
 from rest_framework import serializers
-from .models import Ketju, Aihealue, Vastaus
+from .models import Ketju, Aihealue, Vastaus, Notes
 from django.contrib.auth.models import User
 
 # Käyttäjäserializer
@@ -37,3 +37,8 @@ class VastausSerializer(serializers.ModelSerializer):
     class Meta:
         model = Vastaus
         fields = '__all__'
+
+class NotesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Notes
+        fields = ['id', 'header', 'content', 'created', 'updated', 'tags']
