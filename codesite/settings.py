@@ -83,7 +83,7 @@ WSGI_APPLICATION = 'codesite.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sql_server',
+        'ENGINE': 'mssql',
         'NAME': os.getenv("DB_NAME"),
         'HOST': os.getenv("DB_HOST"),
         'USER': os.getenv("DB_USER"),
