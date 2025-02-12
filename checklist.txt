@@ -50,3 +50,14 @@ from codesitemainapp.models import Aihealue, Ketju
 #testataan tietojen syöttöä
 new_entry = Aihealue.objects.create(header='New Entry')
 new_entry_ketju = Ketju.objects.create(header='New Entry for Ketju')
+
+
+
+'''
+Esimerkkejä, muistioksi.
+https://www.django-rest-framework.org/api-guide/permissions/
+https://www.django-rest-framework.org/api-guide/viewsets/
+https://docs.djangoproject.com/en/5.0/topics/db/queries/
+https://github.com/encode/django-rest-framework
+'''
+

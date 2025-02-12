@@ -1,11 +1,3 @@
-'''
-Esimerkkejä, muistioksi.
-https://www.django-rest-framework.org/api-guide/permissions/
-https://www.django-rest-framework.org/api-guide/viewsets/
-https://docs.djangoproject.com/en/5.0/topics/db/queries/
-https://github.com/encode/django-rest-framework
-'''
-
 #Api funktiot
 
 #Djangon Kirjastot
