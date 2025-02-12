@@ -88,6 +88,7 @@ DATABASES = {
         'HOST': os.getenv("DB_HOST"),
         'USER': os.getenv("DB_USER"),
         'PASSWORD': os.getenv("DB_PASS"),
+        'PORT' : '1433',
         'OPTIONS': {
 	            'driver': 'ODBC Driver 17 for SQL Server',
 	        },
