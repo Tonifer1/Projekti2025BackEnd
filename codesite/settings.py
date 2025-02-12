@@ -83,10 +83,9 @@ WSGI_APPLICATION = 'codesite.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'mssql',
+        'ENGINE': 'django.db.backends.sql_server',
         'NAME': os.getenv("DB_NAME"),
         'HOST': os.getenv("DB_HOST"),
-        'PORT': '1433',
         'USER': os.getenv("DB_USER"),
         'PASSWORD': os.getenv("DB_PASS"),
         'OPTIONS': {
