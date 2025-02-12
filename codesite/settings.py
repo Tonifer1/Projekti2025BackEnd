@@ -81,7 +81,6 @@ WSGI_APPLICATION = 'codesite.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-#mssql 
 DATABASES = {
     'default': {
         'ENGINE': 'mssql',

@@ -1,32 +1,26 @@
-#Api funktiot
+# Api funktiot
 
-#Djangon Kirjastot
+# Djangon Kirjastot
 from django.contrib.auth import authenticate, login, logout
 from django.http import JsonResponse
 
-#luokat , Moduulit
+# Luokat , Moduulit
 from . import serializers
-from .models import Aihealue,Ketju,Vastaus,Notes,User
-from .serializers import AihealueSerializer,KetjuSerializer,VastausSerializer,NotesSerializer
-from .serializers import UserSerializer
-from .permissions import IsAdminOrSuperuser #tuotu erillisestä permissions tiedostosta
+from .models import Aihealue, Ketju, Vastaus, Notes, User
+from .serializers import AihealueSerializer, KetjuSerializer, VastausSerializer, NotesSerializer, UserSerializer
+from .permissions import IsAdminOrSuperuser  # Tuotu erillisestä permissions-tiedostosta
 
-#DRF kirjastot
+# DRF kirjastot
 from rest_framework import viewsets, permissions
 from rest_framework.response import Response
 from rest_framework.decorators import action
 
-#Funktiot
-
-
-#Käyttäjä määritykset
+# Käyttäjä määritykset
 class IsSuperuserOrReadOnly(permissions.BasePermission):
     def has_permission(self, request, view):
-        # Estetään muut kuin adminit ja superuserit muokkaamasta is_superuser kenttää
-        if request.method == 'PATCH':
-            if 'is_superuser' in request.data:
-                if not request.user.is_superuser:
-                    return False
+        # Estetään muut kuin adminit ja superuserit muokkaamasta is_superuser-kenttää
+        if request.method == 'PATCH' and 'is_superuser' in request.data:
+            return request.user.is_superuser
         return True
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -41,40 +35,31 @@ class UserViewSet(viewsets.ModelViewSet):
             return User.objects.all()
         # Tavalliset käyttäjät näkevät vain omat tietonsa
         return User.objects.filter(id=user.id)
-    
-   
+
     def is_superuser(self, request):
         # Tarkistetaan, onko käyttäjä superuser
-        is_superuser = request.user.is_superuser
-        return Response({"is_superuser": is_superuser})
+        return Response({"is_superuser": request.user.is_superuser})
 
 
-
-#Foorumi alue.
+# Foorumi alue
 class AihealueViewSet(viewsets.ModelViewSet):
     queryset = Aihealue.objects.all()
     serializer_class = AihealueSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsAdminOrSuperuser] # aiheiden luonti vain adminin luvilla
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsAdminOrSuperuser]  # Aiheiden luonti vain adminin luvilla
 
     def perform_create(self, serializer):
         serializer.save()
 
-# foorumin ketjut jotka lisätään aihealueen alle
+
+# Foorumin ketjut jotka lisätään aihealueen alle
 class KetjuViewSet(viewsets.ModelViewSet):
     queryset = Ketju.objects.all()
     serializer_class = KetjuSerializer
     permission_classes = [permissions.AllowAny]
-
-    # voidaan rajoittaa spammausta, eli kontrolli kirosanoille yms, kokeellinen, toisaalta suodatus toimii paremmin frontin puolella.
-    # sanoja voidaan lisätä, poistaa tarpeen mukaan.
-    FORBIDDEN_WORDS = ["spam", "väärä aihe", "kielletty sana"]
-
+    
     def perform_create(self, serializer):
-        nimi = serializer.validated_data.get("nimi", "").lower()
-        sisalto = serializer.validated_data.get("sisalto", "").lower()
-        if any(word in nimi for word in self.FORBIDDEN_WORDS) or any(word in sisalto for word in self.FORBIDDEN_WORDS):
-            raise serializers.ValidationError("Ketjun nimi tai sisältö sisältää aiheeseen sopimattomia sanoja.")
         serializer.save()
+
 
 class VastausViewSet(viewsets.ModelViewSet):
     queryset = Vastaus.objects.all()
@@ -84,19 +69,9 @@ class VastausViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(kayttaja=self.request.user)
         return super().perform_create(serializer)
-    
+
+
 class NoteViewSet(viewsets.ModelViewSet):
     queryset = Notes.objects.all()
     serializer_class = NotesSerializer
     permission_classes = [permissions.AllowAny]
-
-    @action(detail=False, methods=['get'])
-    def filter_by_tag(self, request):
-        tag = request.query_params.get('tag', None)
-        if tag:
-            notes = Notes.objects.filter(tags=tag)
-        else:
-            notes = Notes.objects.all()
-            
-        serializer = self.get_serializer(notes, many=True)
-        return Response(serializer.data)
