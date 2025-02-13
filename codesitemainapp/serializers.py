@@ -42,4 +42,4 @@ class VastausSerializer(serializers.ModelSerializer):
 class NotesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Notes
-        fields = ['id', 'header', 'content', 'created', 'updated', 'tags']
+        fields = ['id', 'header', 'content', 'created', 'updated', 'tags', 'owner']

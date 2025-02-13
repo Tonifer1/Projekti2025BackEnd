@@ -36,9 +36,10 @@ class Tags(models.TextChoices):
     VISUAL_STUDIO = 'visual_studio', 'Visual Studio'
     DJANGO = 'django', 'Django'
     PYTHON = 'python', 'Python'
-    PERSONAL = 'personal', 'Personal'
+    PERSONAL = 'personal', 
 
 class Notes(models.Model):
+    owner = models.ForeignKey(User, on_delete=models.CASCADE)
     header = models.TextField()
     content = models.TextField()
     created = models.DateTimeField(auto_now_add=True)
