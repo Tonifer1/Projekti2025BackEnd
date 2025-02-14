@@ -28,6 +28,7 @@ class UserViewSet(viewsets.ModelViewSet):
     serializer_class = UserSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsSuperuserOrReadOnly]
     
+    '''
     def get_queryset(self):
         user = self.request.user
         if user.is_staff or user.is_superuser:
@@ -39,6 +40,7 @@ class UserViewSet(viewsets.ModelViewSet):
     def is_superuser(self, request):
         # Tarkistetaan, onko käyttäjä superuser
         return Response({"is_superuser": request.user.is_superuser})
+        '''
 
 
 # Foorumi alue
