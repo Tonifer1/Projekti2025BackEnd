@@ -14,6 +14,7 @@ from .permissions import IsAdminOrSuperuser  # Tuotu erillisestä permissions-ti
 from rest_framework import viewsets, permissions
 from rest_framework.response import Response
 from rest_framework.decorators import action
+from rest_framework.views import APIView
 
 # Käyttäjä määritykset
 class IsSuperuserOrReadOnly(permissions.BasePermission):
@@ -22,6 +23,12 @@ class IsSuperuserOrReadOnly(permissions.BasePermission):
         if request.method == 'PATCH' and 'is_superuser' in request.data:
             return request.user.is_superuser
         return True
+    
+class NotesByTag(APIView):
+    def get(self, request, tag):
+        notes = Notes.objects.filter(tags=tag)
+        serializer = NotesSerializer(notes, many=True)
+        return Response(serializer.data)    
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()

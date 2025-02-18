@@ -1,6 +1,7 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from .api_views import AihealueViewSet,KetjuViewSet,VastausViewSet,NoteViewSet,UserViewSet
+from .api_views import NotesByTag
 
 # REST API reitit objektien hakuun JSON muodossa, määritetty api_views tiedostossa.
 router = DefaultRouter()
@@ -13,4 +14,5 @@ router.register(r'Users', UserViewSet)
 # URLS, suorat reitit
 urlpatterns = [
     path('api/', include(router.urls)),
+    path('api/Notes/tag/<str:tag>/', NotesByTag.as_view(), name='notes-by-tag'),
 ]

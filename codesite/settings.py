@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     'codesite',
+    'django_filters',
 ]
 
 MIDDLEWARE = [

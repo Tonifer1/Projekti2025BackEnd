@@ -5,6 +5,7 @@ from django.db import models
 from django.contrib.auth.models import User
 
 
+
 #Pohja , lisätään toimintoja tarvittaessa.
 
 # Foorumi
@@ -29,6 +30,7 @@ class Vastaus(models.Model):
     ketju = models.ForeignKey(Ketju, on_delete=models.CASCADE, related_name="replies")  #jos alkuperäinen julkaisu poistetaan sen julkaisun vastaukset poistetaan.
 
 #Notes osio
+
 
 class Tags(models.TextChoices):
     C_SHARP = 'csharp', 'C#'
