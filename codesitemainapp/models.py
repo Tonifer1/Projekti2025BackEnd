@@ -31,7 +31,6 @@ class Vastaus(models.Model):
 
 #Notes osio
 
-
 class Tags(models.TextChoices):
     C_SHARP = 'csharp', 'C#'
     REACT = 'react', 'React'

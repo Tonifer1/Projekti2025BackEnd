@@ -20,8 +20,7 @@ class AihealueSerializer(serializers.ModelSerializer):
 
 
 class KetjuSerializer(serializers.ModelSerializer):
-    #author = UserSerializer(read_only=True) kunnes saadaan kirjautuminen muutoin syötetään käyttäjä käsin.
-    author = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), required=True) 
+    author = serializers.HiddenField(default=serializers.CurrentUserDefault())
     aihealue = serializers.PrimaryKeyRelatedField(queryset=Aihealue.objects.all())
     aihealue_data = AihealueSerializer(source='aihealue', read_only=True)
 
@@ -43,3 +42,24 @@ class NotesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Notes
         fields = ['id', 'header', 'content', 'created', 'updated', 'tags', 'owner']
+
+#Tunnusten luonti
+class SignupSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(write_only=True)
+    first_name = serializers.CharField(required=False, allow_blank=True)
+    last_name = serializers.CharField(required=False, allow_blank=True)
+
+    class Meta:
+        model = User
+        fields = ['username', 'password', 'email', 'first_name', 'last_name']
+
+    def create(self, validated_data):
+        user = User(
+        username=validated_data['username'],
+        email=validated_data['email'],
+        first_name=validated_data.get('first_name', ''),  # Oikea tapa käyttää get()
+        last_name=validated_data.get('last_name', '')     # Oikea tapa käyttää get()
+    )
+        user.set_password(validated_data['password'])
+        user.save()
+        return user

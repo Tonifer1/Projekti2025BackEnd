@@ -143,6 +143,22 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 #Autentikaatio asetukset tähän alle
+#cookies
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'codesitemainapp.authentication.CookieJWTAuthentication',
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ],
+}
+
+#token jwt
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=15),  # Käyttäjän tokenin voimassaoloaika
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),     # Refresh-tokenin voimassaoloaika
+    'ROTATE_REFRESH_TOKENS': True,                  # Luo uusi refresh-token käytettäessä
+    'BLACKLIST_AFTER_ROTATION': True,               # Vanha refresh-token mitätöityy
+    'AUTH_HEADER_TYPES': ('Bearer',),               # Käytä "Bearer" -headeria
+}
 
 #Autentikaatio asetus osion loppu
 
