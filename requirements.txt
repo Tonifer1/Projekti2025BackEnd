@@ -1,5 +1,5 @@
 asgiref==3.8.1
-Django==5.1.7
+Django==5.0.9
 django-cors-headers==4.7.0
 django-filter==25.1
 django-mssql-backend==2.8.1
