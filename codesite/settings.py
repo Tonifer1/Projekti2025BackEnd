@@ -22,7 +22,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = os.getenv("DEBUG")
 
 # SECURITY WARNING: In production, allow only those domains which you trust.
 #REST CORS ja sallitut domainit
@@ -45,8 +45,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     'codesite',
-    'django_filters',
-    'rest_framework.authtoken',
+    'django_filters',    
 ]
 
 MIDDLEWARE = [

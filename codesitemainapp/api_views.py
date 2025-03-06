@@ -124,7 +124,7 @@ class AihealueViewSet(viewsets.ModelViewSet):
 class KetjuViewSet(viewsets.ModelViewSet):
     queryset = Ketju.objects.all()
     serializer_class = KetjuSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     
     def perform_create(self, serializer):
         serializer.save()
@@ -134,7 +134,7 @@ class KetjuViewSet(viewsets.ModelViewSet):
 class VastausViewSet(viewsets.ModelViewSet):
     queryset = Vastaus.objects.all()
     serializer_class = VastausSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def perform_create(self, serializer):
         serializer.save(kayttaja=self.request.user)
@@ -149,10 +149,6 @@ class NoteViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         # Suodatetaan muistiot käyttäjän mukaan
         return Notes.objects.filter(owner=self.request.user)
-
-
-
-
 
 class NotesByTag(APIView):
     def get(self, request, tag):
