@@ -140,6 +140,7 @@ class VastausViewSet(viewsets.ModelViewSet):
 
 #Notes osio
 class NoteViewSet(viewsets.ModelViewSet):
+    queryset = Notes.objects.all()  
     serializer_class = NotesSerializer
     permission_classes = [permissions.IsAuthenticated]
 
