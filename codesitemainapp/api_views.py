@@ -12,13 +12,15 @@ from .permissions import IsAdminOrSuperuser  # Tuotu erillisestä permissions-ti
 
 # DRF kirjastot
 from rest_framework import viewsets, permissions, status
-from rest_framework.permissions import IsAuthenticated, AllowAny, BasePermission
+from rest_framework.permissions import IsAuthenticated, AllowAny, BasePermission, IsAdminUser
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from rest_framework.views import APIView
 from rest_framework.generics import get_object_or_404
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.authentication import SessionAuthentication
 
 #parantaa yhteensopivuutta kun siirretään moduli alemmaksi
 from rest_framework.decorators import api_view, permission_classes
@@ -87,7 +89,7 @@ class IsSuperuserOrReadOnly(permissions.BasePermission):
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsSuperuserOrReadOnly]
+    permission_classes = [permissions.IsAuthenticated, IsAdminOrSuperuser]
     
 
     def get_queryset(self):
@@ -140,16 +142,15 @@ class VastausViewSet(viewsets.ModelViewSet):
 
 #Notes osio
 class NoteViewSet(viewsets.ModelViewSet):
-    queryset = Notes.objects.all()  
+    queryset = Notes.objects.all()  # Oletusarvoinen queryset
     serializer_class = NotesSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        user = self.request.user                # Haetaan kirjautunut käyttäjä
-        return Notes.objects.filter(user=user)  # Suodatetaan vain käyttäjän omat muistiot
+        # Suodatetaan muistiot käyttäjän mukaan
+        return Notes.objects.filter(owner=self.request.user)
 
-    def perform_create(self, serializer):
-        serializer.save(user=self.request.user)  # Tallennetaan muistiot kirjautuneelle käyttäjälle
+
 
 
 

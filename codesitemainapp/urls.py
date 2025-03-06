@@ -21,7 +21,7 @@ router.register(r'Users', UserViewSet)
 # URLS, suorat reitit
 urlpatterns = [
     path('api/', include(router.urls)),
-    path('api/Notes/tag/<str:tag>/', NotesByTag.as_view(), name='notes-by-tag'),
+
     path('api/login/', login_view, name='api_login'),   #muutettu jwt auth
     path('api/logout/', logout_view, name='api_logout'),
     path('api/profile/', api_views.user_profile_view, name='user-profile'),
