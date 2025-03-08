@@ -32,7 +32,13 @@ CSRF_TRUSTED_ORIGINS = ['https://*.azurewebsites.net',
                         'http://localhost:3000']
 
 CORS_ALLOW_ALL_ORIGINS = True
-#CORS_ALLOW_CREDENTIALS = True
+
+#jos CAC == True niin tulee olla määritetyt originit
+CORS_ALLOWED_ORIGINS = [
+   "http://localhost:5174",
+    "https://codesitebe-efgshggehucfdvhq.swedencentral-01.azurewebsites.net",
+]
+CORS_ALLOW_CREDENTIALS = True
 
 
 # Application definition
