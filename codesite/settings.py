@@ -30,6 +30,8 @@ ALLOWED_HOSTS = ['*']
 CSRF_TRUSTED_ORIGINS = ['https://*.azurewebsites.net',     #azure täytyy olla
                         'http://localhost:3000']
 CORS_ALLOW_ALL_ORIGINS: True
+CORS_ALLOW_CREDENTIALS = True
+
 
 # Application definition
 
