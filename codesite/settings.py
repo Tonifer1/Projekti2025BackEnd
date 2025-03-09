@@ -26,18 +26,27 @@ DEBUG = os.getenv("DEBUG")
 
 # SECURITY WARNING: In production, allow only those domains which you trust.
 #REST CORS ja sallitut domainit
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = [
+    'localhost', 
+    '127.0.0.1',
+    'codesitebe-efgshggehucfdvhq.swedencentral-01.azurewebsites.net'
+    ]  #muutetttu * ---> tarkemmat määritykset
+
+
+
+#jos CAC == True niin tulee olla määritetyt originit
 CSRF_TRUSTED_ORIGINS = ['https://*.azurewebsites.net',
                         'https://codesitebe-efgshggehucfdvhq.swedencentral-01.azurewebsites.net',     #azure täytyy olla
                         'http://localhost:3000']
 
 #CORS_ALLOW_ALL_ORIGINS = True
 
-#jos CAC == True niin tulee olla määritetyt originit
 CORS_ALLOWED_ORIGINS = [
    "http://localhost:5173",
     "https://codesitebe-efgshggehucfdvhq.swedencentral-01.azurewebsites.net",
 ]
+
+
 CORS_ALLOW_CREDENTIALS = True
 
 
@@ -58,7 +67,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    'corsheaders.middleware.CorsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',                 #paras yhteensopivuus kun ylimpänä
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -167,10 +176,23 @@ SIMPLE_JWT = {
     'ROTATE_REFRESH_TOKENS': True,                  # Luo uusi refresh-token käytettäessä
     'BLACKLIST_AFTER_ROTATION': True,               # Vanha refresh-token mitätöityy
     'AUTH_HEADER_TYPES': ('Bearer',),               # Käytä "Bearer" -headeria
-}
+    
+    #lisätään muutama määritys 9.3. 12:00
+    'AUTH_COOKIE': 'access_token',      # Evästeen nimi
+    'AUTH_COOKIE_HTTP_ONLY': True,      # Vain HTTP-käyttö (ei JS)
+    'AUTH_COOKIE_SECURE': True,         # HTTPS-vaatimus
+    'AUTH_COOKIE_SAMESITE': 'None',     # Tarvitaan, jos React pyytää cross-origin localhost ajossa vaihda 'Lax'
+}   
+
 
 #Autentikaatio asetus osion loppu
 
-#Lisä asetukset 1 start
-
+#Lisä asetukset 1 start CORS CSRF COOKIES  9.3.  12:00
+CSRF_COOKIE_HTTPONLY = False  # Salli JavaScriptin käyttää CSRF-evästettä
+CSRF_COOKIE_SECURE = True  # Pakottaa HTTPS-yhteyden (Azure)
+SESSION_COOKIE_SECURE = True  # Sama HTTPS-vaatimus sessioevästeille
+CORS_ALLOW_CREDENTIALS = True  # Salli evästeet ja JWT-kirjautuminen
 #Lisä asetukset 1 end
+
+#Lisä asetukset 2 start
+#Lisä asetukset 2 end
