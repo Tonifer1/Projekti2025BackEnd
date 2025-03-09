@@ -177,7 +177,7 @@ SIMPLE_JWT = {
     'BLACKLIST_AFTER_ROTATION': True,               # Vanha refresh-token mitätöityy
     'AUTH_HEADER_TYPES': ('Bearer',),               # Käytä "Bearer" -headeria
     
-    #lisätään muutama määritys 9.3. 12:00
+    #lisätään muutama määritys 
     'AUTH_COOKIE': 'access_token',      # Evästeen nimi
     'AUTH_COOKIE_HTTP_ONLY': True,      # Vain HTTP-käyttö (ei JS)
     'AUTH_COOKIE_SECURE': True,         # HTTPS-vaatimus
@@ -187,7 +187,7 @@ SIMPLE_JWT = {
 
 #Autentikaatio asetus osion loppu
 
-#Lisä asetukset 1 start CORS CSRF COOKIES  9.3.  12:00
+#Lisä asetukset 1 start CORS CSRF COOKIES  
 CSRF_COOKIE_HTTPONLY = False  # Salli JavaScriptin käyttää CSRF-evästettä
 CSRF_COOKIE_SECURE = True  # Pakottaa HTTPS-yhteyden (Azure)
 SESSION_COOKIE_SECURE = True  # Sama HTTPS-vaatimus sessioevästeille
