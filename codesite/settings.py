@@ -190,9 +190,11 @@ SIMPLE_JWT = {
 #Lisä asetukset 1 start CORS CSRF COOKIES  
 CSRF_COOKIE_HTTPONLY = False  # Salli JavaScriptin käyttää CSRF-evästettä
 CSRF_COOKIE_SECURE = True  # Pakottaa HTTPS-yhteyden (Azure)
-SESSION_COOKIE_SECURE = True  # Sama HTTPS-vaatimus sessioevästeille
 CORS_ALLOW_CREDENTIALS = True  # Salli evästeet ja JWT-kirjautuminen
+CSRF_COOKIE_SAMESITE = 'None'
 #Lisä asetukset 1 end
 
 #Lisä asetukset 2 start
+SESSION_COOKIE_SAMESITE = 'None'  # Tarvitaan cross-origin-pyynnöissä
+SESSION_COOKIE_SECURE = True  # Sama HTTPS-vaatimus sessioevästeille
 #Lisä asetukset 2 end
