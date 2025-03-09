@@ -43,8 +43,8 @@ def login_view(request):
     if user:
         refresh = RefreshToken.for_user(user)
         response = Response({'message': 'Login successful'}, status=status.HTTP_200_OK)
-        response.set_cookie('access_token', str(refresh.access_token), httponly=True, secure=True, samesite='Lax')
-        response.set_cookie('refresh_token', str(refresh), httponly=True, secure=True, samesite='Lax')
+        response.set_cookie('access_token', str(refresh.access_token), httponly=True, secure=True, samesite='None')
+        response.set_cookie('refresh_token', str(refresh), httponly=True, secure=True, samesite='None')
         return response
     return Response({'error': 'Invalid credentials'}, status=status.HTTP_400_BAD_REQUEST)
 
