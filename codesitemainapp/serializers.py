@@ -41,7 +41,10 @@ class VastausSerializer(serializers.ModelSerializer):
 class NotesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Notes
-        fields = ['id', 'header', 'content', 'created', 'updated', 'tags', 'owner']
+        fields = '__all__'
+        extra_kwargs = {
+            'owner': {'read_only': True} #aseta owner
+        }
 
 #Tunnusten luonti
 class SignupSerializer(serializers.ModelSerializer):
