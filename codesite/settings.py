@@ -183,7 +183,7 @@ SIMPLE_JWT = {
     'AUTH_COOKIE_HTTP_ONLY': True,      # Vain HTTP-käyttö (ei JS)
     'AUTH_COOKIE_SECURE': True,         # HTTPS-vaatimus
     'AUTH_COOKIE_SAMESITE': 'None',     # Tarvitaan, jos React pyytää cross-origin localhost ajossa vaihda 'Lax'
-    "AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.tokens.AccessToken",),
+    "AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.tokens.AccessToken",)
 }   
 
 
