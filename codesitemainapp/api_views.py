@@ -29,8 +29,16 @@ from rest_framework.decorators import api_view, permission_classes
 class MyTokenObtainPairView(TokenObtainPairView):
     permission_classes = (AllowAny,)
 
-class MyTokenRefreshView(TokenRefreshView):
-    permission_classes = (AllowAny,)
+class CustomTokenRefreshView(TokenRefreshView): 
+
+    def post(self, request, *args, **kwargs): 
+        refresh_token = request.COOKIES.get("refresh_token")  #  Hakee evästeestä 
+        if refresh_token is None: 
+            return Response({"error": "No refresh token found"}, status=status.HTTP_400_BAD_REQUEST) 
+        mutable_data = request.data.copy()  # Tehdään kopio requestin datasta 
+        mutable_data["refresh"] = refresh_token   
+        request._full_data = mutable_data  # Päivitetään requestin dataan uusi kopio 
+        return super().post(request, *args, **kwargs) 
 
 
 #kirjautuminen

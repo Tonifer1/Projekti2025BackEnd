@@ -175,13 +175,15 @@ SIMPLE_JWT = {
     'REFRESH_TOKEN_LIFETIME': timedelta(days=7),     # Refresh-tokenin voimassaoloaika
     'ROTATE_REFRESH_TOKENS': True,                  # Luo uusi refresh-token käytettäessä
     'BLACKLIST_AFTER_ROTATION': True,               # Vanha refresh-token mitätöityy
-    'AUTH_HEADER_TYPES': ('Bearer',),               # Käytä "Bearer" -headeria
+    'AUTH_HEADER_TYPES': ('Bearer',),               # Käytä "Bearer" -headeria ei tarvita kun evästeet käytössä
     
     #lisätään muutama määritys 
     'AUTH_COOKIE': 'access_token',      # Evästeen nimi
+    "AUTH_COOKIE_REFRESH": 'refresh',  # Refresh-token evästeessä
     'AUTH_COOKIE_HTTP_ONLY': True,      # Vain HTTP-käyttö (ei JS)
     'AUTH_COOKIE_SECURE': True,         # HTTPS-vaatimus
     'AUTH_COOKIE_SAMESITE': 'None',     # Tarvitaan, jos React pyytää cross-origin localhost ajossa vaihda 'Lax'
+    "AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.tokens.AccessToken",),
 }   
 
 

@@ -2,11 +2,10 @@ from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from . import api_views
 from .api_views import AihealueViewSet,KetjuViewSet,VastausViewSet,NoteViewSet,UserViewSet,NotesByTag,login_view,logout_view, user_profile_view
-
+from .api_views import CustomTokenRefreshView 
 #jwt importit start
 from rest_framework_simplejwt.views import (
-    TokenObtainPairView,
-    TokenRefreshView,
+    TokenObtainPairView
 )
 #jwt import end
 
@@ -26,6 +25,6 @@ urlpatterns = [
     path('api/profile/', api_views.user_profile_view, name='user-profile'),
     path('api/signup/', api_views.signup, name='signedup'),
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
-    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path("api/token/refresh/", CustomTokenRefreshView.as_view(), name="token_refresh"), 
 
 ]
