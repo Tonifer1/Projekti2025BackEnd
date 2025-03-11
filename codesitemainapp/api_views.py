@@ -1,122 +1,29 @@
 # Api funktiot
-
 # Djangon Kirjastot
 from django.contrib.auth import authenticate, login, logout
 from django.http import JsonResponse
 
 # Luokat , Moduulit
-from . import serializers
-from .models import Aihealue, Ketju, Vastaus, Notes, User
-from .serializers import AihealueSerializer, KetjuSerializer, VastausSerializer, NotesSerializer, UserSerializer, SignupSerializer
+from .models import Aihealue, Ketju, Vastaus, Notes
+from .serializers import AihealueSerializer, KetjuSerializer, VastausSerializer, NotesSerializer, CustomUserSerializer, RegisterUserSerializer
 from .permissions import IsAdminOrSuperuser  # Tuotu erillisestä permissions-tiedostosta
 
 # DRF kirjastot
 from rest_framework import viewsets, permissions, status
 from rest_framework.permissions import IsAuthenticated, AllowAny, BasePermission, IsAdminUser
 from rest_framework.response import Response
-from rest_framework.decorators import action
 from rest_framework.views import APIView
-from rest_framework.generics import get_object_or_404
-from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
-from rest_framework_simplejwt.tokens import RefreshToken
-from rest_framework.authentication import TokenAuthentication
-from rest_framework.authentication import SessionAuthentication
+from rest_framework.generics import RetrieveUpdateAPIView, CreateAPIView
 
-#parantaa yhteensopivuutta kun siirretään moduli alemmaksi
-from rest_framework.decorators import api_view, permission_classes
+class UserInfoView (RetrieveUpdateAPIView):
+    serializer_class = CustomUserSerializer
+    permission_classes = ()
 
-#Autentikaatio token evästeet
-class MyTokenObtainPairView(TokenObtainPairView):
-    permission_classes = (AllowAny,)
+    def get_object(self):
+        return self.request.user
 
-class CustomTokenRefreshView(TokenRefreshView): 
-
-    def post(self, request, *args, **kwargs): 
-        refresh_token = request.COOKIES.get("refresh_token")  #  Hakee evästeestä 
-        if refresh_token is None: 
-            return Response({"error": "No refresh token found"}, status=status.HTTP_400_BAD_REQUEST) 
-        mutable_data = request.data.copy()  # Tehdään kopio requestin datasta 
-        mutable_data["refresh"] = refresh_token   
-        request._full_data = mutable_data  # Päivitetään requestin dataan uusi kopio 
-        return super().post(request, *args, **kwargs) 
-
-
-#kirjautuminen
-@api_view(['POST'])
-@permission_classes([AllowAny])
-def login_view(request):
-    username = request.data.get('username')
-    password = request.data.get('password')
-    user = authenticate(request, username=username, password=password)
-    if user:
-        refresh = RefreshToken.for_user(user)
-        response = Response({'message': 'Login successful'}, status=status.HTTP_200_OK)
-        response.set_cookie('access_token', str(refresh.access_token), httponly=True, secure=True, samesite='None')
-        response.set_cookie('refresh_token', str(refresh), httponly=True, secure=True, samesite='None')
-        return response
-    return Response({'error': 'Invalid credentials'}, status=status.HTTP_400_BAD_REQUEST)
-
-@api_view(['POST'])
-@permission_classes([AllowAny])
-def signup(request):
-    if User.objects.filter(username=request.data.get('username')).exists():
-        return Response({'error': 'Username already exists'}, status=status.HTTP_400_BAD_REQUEST)
-    if User.objects.filter(email=request.data.get('email')).exists():
-        return Response({'error': 'Email already in use'}, status=status.HTTP_400_BAD_REQUEST)
-    
-    serializer = SignupSerializer(data=request.data)
-    if serializer.is_valid():
-        serializer.save()
-        return Response({'message': 'User created successfully!'}, status=status.HTTP_201_CREATED)
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-@api_view(['POST'])
-def logout_view(request):
-    response = Response({'message': 'Logged out successfully'}, status=status.HTTP_200_OK)
-    response.set_cookie('access_token', '', httponly=True, secure=True, samesite='Lax')
-    response.set_cookie('refresh_token', '', httponly=True, secure=True, samesite='Lax')
-    try:
-        refresh_token = request.COOKIES.get('refresh_token')
-        if refresh_token:
-            RefreshToken(refresh_token).blacklist()
-    except Exception:
-        pass
-    return response
-
-
-# Käyttäjä määritykset
-class IsSuperuserOrReadOnly(permissions.BasePermission):
-    def has_permission(self, request, view):
-        # Estetään muut kuin adminit ja superuserit muokkaamasta is_superuser-kenttää
-        if request.method == 'PATCH' and 'is_superuser' in request.data:
-            return request.user.is_superuser
-        return True
- 
-#profiilit käyttäjät
-      
-class UserViewSet(viewsets.ModelViewSet):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
-    permission_classes = [permissions.IsAuthenticated, IsAdminOrSuperuser]
-    
-
-    def get_queryset(self):
-        user = self.request.user
-        if user.is_staff or user.is_superuser:
-            # Adminit näkevät kaikki käyttäjät
-            return User.objects.all()
-        # Tavalliset käyttäjät näkevät vain omat tietonsa
-        return User.objects.filter(id=user.id)
-
-    def is_superuser(self, request):
-        # Tarkistetaan, onko käyttäjä superuser
-        return Response({"is_superuser": request.user.is_superuser})
- 
-@api_view(['GET'])
-@permission_classes([IsAuthenticated])
-def user_profile_view(request):
-    serializer = UserSerializer(request.user)
-    return Response(serializer.data)
+class UserRegistrationView(CreateAPIView):
+    serializer_class = RegisterUserSerializer
 
 # Foorumi alue
 class AihealueViewSet(viewsets.ModelViewSet):

@@ -1,16 +1,27 @@
 #Serializers luokat, joilla kootaan tai puretaan JSON tiedot
-
-
-
 from rest_framework import serializers
-from .models import Ketju, Aihealue, Vastaus, Notes
-from django.contrib.auth.models import User
+from rest_framework.serializers import ModelSerializer
+from .models import Ketju, Aihealue, Vastaus, Notes, CustomUser
 
-# Käyttäjäserializer
-class UserSerializer(serializers.ModelSerializer):
+
+# Customoitu käyttäjäserializer joka perustuu CustomUser modelliin models.py
+class CustomUserSerializer(ModelSerializer):
+
     class Meta:
-        model = User
-        fields = ['id', 'username', 'first_name', 'last_name', 'email', 'is_superuser']
+        model = CustomUser
+        fields = ['id','email','username']
+
+#Tunnusten luonti
+class RegisterUserSerializer(ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = ['email','username','password']
+        extra_kwargs = {'password':{'write_only':True}}
+
+        def create(self, valitaded_data):
+            user = CustomUser.objects.create_user(**valitaded_data)
+            return user
+
 
 # Foorumi
 class AihealueSerializer(serializers.ModelSerializer):
@@ -20,7 +31,7 @@ class AihealueSerializer(serializers.ModelSerializer):
 
 
 class KetjuSerializer(serializers.ModelSerializer):
-    author = serializers.HiddenField(default=serializers.CurrentUserDefault())
+    author = CustomUserSerializer(read_only=True)
     aihealue = serializers.PrimaryKeyRelatedField(queryset=Aihealue.objects.all())
     aihealue_data = AihealueSerializer(source='aihealue', read_only=True)
 
@@ -30,7 +41,7 @@ class KetjuSerializer(serializers.ModelSerializer):
 
 
 class VastausSerializer(serializers.ModelSerializer):
-    replier = UserSerializer(read_only=True)
+    replier = CustomUserSerializer(read_only=True)
     ketju = serializers.PrimaryKeyRelatedField(queryset=Ketju.objects.all())
     ketju_data = KetjuSerializer(source='ketju', read_only=True)
 
@@ -46,23 +57,3 @@ class NotesSerializer(serializers.ModelSerializer):
             'owner': {'read_only': True} #aseta owner
         }
 
-#Tunnusten luonti
-class SignupSerializer(serializers.ModelSerializer):
-    password = serializers.CharField(write_only=True)
-    first_name = serializers.CharField(required=False, allow_blank=True)
-    last_name = serializers.CharField(required=False, allow_blank=True)
-
-    class Meta:
-        model = User
-        fields = ['username', 'password', 'email', 'first_name', 'last_name']
-
-    def create(self, validated_data):
-        user = User(
-        username=validated_data['username'],
-        email=validated_data['email'],
-        first_name=validated_data.get('first_name', ''),  # Oikea tapa käyttää get()
-        last_name=validated_data.get('last_name', '')     # Oikea tapa käyttää get()
-    )
-        user.set_password(validated_data['password'])
-        user.save()
-        return user
