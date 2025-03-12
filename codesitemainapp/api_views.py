@@ -1,31 +1,32 @@
-# API Controllerit
-
 from django.shortcuts import render
 from rest_framework.generics import RetrieveUpdateAPIView, CreateAPIView
-from rest_framework.permissions import IsAuthenticated, AllowAny, BasePermission, IsAdminUser
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from .serializers import AihealueSerializer, KetjuSerializer, VastausSerializer, NotesSerializer, CustomUserSerializer, RegisterUserSerializer, LoginUserSerializer
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.response import Response
-from rest_framework import status, viewsets, permissions
+from rest_framework import status
 from rest_framework_simplejwt.views import TokenRefreshView
 from rest_framework_simplejwt.exceptions import InvalidToken
 from .models import Aihealue, Ketju, Vastaus, Notes
+from rest_framework.permissions import IsAuthenticated, AllowAny, BasePermission, IsAdminUser
 from .permissions import IsAdminOrSuperuser  # Tuotu erillisestä permissions-tiedostosta
+from rest_framework import status, viewsets, permissions
 
+# API Controllerit
 
-class UserInfoView (RetrieveUpdateAPIView):
+class UserInfoView(RetrieveUpdateAPIView):
+    permission_classes = (IsAuthenticated,)
     serializer_class = CustomUserSerializer
-    permission_classes = (IsAuthenticated)
-
+    
     def get_object(self):
         return self.request.user
 
 class UserRegistrationView(CreateAPIView):
     serializer_class = RegisterUserSerializer
 
-#kirjautuminen ja tokenien käsittely
+
 class LoginView(APIView):
     def post(self, request):
         serializer = LoginUserSerializer(data=request.data)
@@ -52,8 +53,7 @@ class LoginView(APIView):
                                 samesite="None")
             return response
         return Response( serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-#Logout
+        
 class LogoutView(APIView):
     
     def post(self, request):
@@ -71,8 +71,7 @@ class LogoutView(APIView):
         response.delete_cookie("refresh_token")
         
         return response    
-    
-#Refresh token
+
 class CookieTokenRefreshView(TokenRefreshView):
     def post(self, request):
         
@@ -94,7 +93,7 @@ class CookieTokenRefreshView(TokenRefreshView):
             return response
         except InvalidToken:
             return Response({"error":"Invalid token"}, status=status.HTTP_401_UNAUTHORIZED)
-            
+          
 
 # Foorumi alue controllerit
 class AihealueViewSet(viewsets.ModelViewSet):
@@ -103,7 +102,7 @@ class AihealueViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsAdminOrSuperuser]  # Aiheiden luonti vain adminin luvilla
 
     def perform_create(self, serializer):
-        serializer.save()
+        serializer.save(author=self.request.user)    #asettaa kirjautuneen käyttäjän luojaksi 
 
 
 # Foorumin ketjut jotka lisätään aihealueen alle
@@ -113,10 +112,10 @@ class KetjuViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     
     def perform_create(self, serializer):
-        serializer.save()
+        serializer.save(author=self.request.user)   #asettaa kirjautuneen käyttäjän luojaksi 
 
 
-#Ketjujen yksittäiset vastaukset (repy)
+#Ketjujen yksittäiset vastaukset (reply)
 class VastausViewSet(viewsets.ModelViewSet):
     queryset = Vastaus.objects.all()
     serializer_class = VastausSerializer
@@ -124,7 +123,6 @@ class VastausViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(kayttaja=self.request.user)
-        return super().perform_create(serializer)
 
 #Notes osio
 class NoteViewSet(viewsets.ModelViewSet):

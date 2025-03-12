@@ -8,21 +8,19 @@ from django.contrib.auth import authenticate
 
 # Customoitu käyttäjäserializer joka perustuu CustomUser modelliin models.py
 class CustomUserSerializer(ModelSerializer):
-
+    
     class Meta:
         model = CustomUser
-        fields = ['id','email','username']
+        fields =("id", "email", "username")
 
-#Tunnukset email + salasana
-#Tunnusten luonti
 class RegisterUserSerializer(ModelSerializer):
     class Meta:
         model = CustomUser
-        fields = ['email','username','password']
-        extra_kwargs = {'password':{'write_only':True}}
-
-    def create(self, valitaded_data):
-        user = CustomUser.objects.create_user(**valitaded_data)
+        fields = ("email", "username", "password")
+        extra_kwargs = {"password":{"write_only":True}}
+        
+    def create(self, validated_data):
+        user = CustomUser.objects.create_user(**validated_data)
         return user
 
 #Kirjautuminen

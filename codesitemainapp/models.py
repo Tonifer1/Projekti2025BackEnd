@@ -23,7 +23,7 @@ class Ketju(models.Model):
     author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="forum_threads") #jos käyttäjä poistetaan niin ks käyttäjän julkaisut poistuu
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
-    aihealue = models.ForeignKey(Aihealue, on_delete=models.CASCADE, related_name="threads")  
+    aihealue = models.ForeignKey(Aihealue, on_delete=models.CASCADE, related_name="threads")
 
 class Vastaus(models.Model):  
     content = models.TextField()

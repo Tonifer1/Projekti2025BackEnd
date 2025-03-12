@@ -32,22 +32,16 @@ ALLOWED_HOSTS = [
     'codesitebe-efgshggehucfdvhq.swedencentral-01.azurewebsites.net'
     ]  #muutetttu * ---> tarkemmat määritykset
 
-
-
- #jos CAC == True niin tulee olla määritetyt originit
-CSRF_TRUSTED_ORIGINS = ['https://*.azurewebsites.net',
-                         'https://codesitebe-efgshggehucfdvhq.swedencentral-01.azurewebsites.net',     #azure täytyy olla
-                         'http://localhost:3000']
-
+# #jos CAC == True niin tulee olla määritetyt originit
 # #CORS_ALLOW_ALL_ORIGINS = True
 
-# CORS_ALLOWED_ORIGINS = [
-#    "http://localhost:5173",
-#     "https://codesitebe-efgshggehucfdvhq.swedencentral-01.azurewebsites.net",
-# ]
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",
+     "https://codesitebe-efgshggehucfdvhq.swedencentral-01.azurewebsites.net",
+ ]
 
 
-# CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_CREDENTIALS = True
 
 
 # Application definition
@@ -149,31 +143,29 @@ USE_I18N = True
 USE_TZ = True
 
 
+
 # Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/4.0/howto/static-files/
-# varmista polut
-STATIC_URL = '/static/'
-STATIC_ROOT = 'static'
+# https://docs.djangoproject.com/en/5.1/howto/static-files/
+
+STATIC_URL = 'static/'
 
 # Default primary key field type
-# https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
-
+# https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'codesitemainapp.CustomUser'
-#res
+
 REST_FRAMEWORK = {
 
     'DEFAULT_AUTHENTICATION_CLASSES': (
-    
-        'codesitemainapp.authentication.CookieJWTAuthentication',
+        'rest_framework_simplejwt.authentication.JWTAuthentication', #jos ei tarvita csrf tokenia
+        'codesitemainapp.authentication.CookieJWTAuthentication'
     )
 
 }
 
-#token jwt
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=0.2),
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=15),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
     "ROTATE_REFRESH_TOKENS": False,
     "BLACKLIST_AFTER_ROTATION": False,
