@@ -1,7 +1,9 @@
 #Serializers luokat, joilla kootaan tai puretaan JSON tiedot
-from rest_framework import serializers
-from rest_framework.serializers import ModelSerializer
 from .models import Ketju, Aihealue, Vastaus, Notes, CustomUser
+
+from rest_framework.serializers import ModelSerializer, Serializer
+from rest_framework import serializers
+from django.contrib.auth import authenticate
 
 
 # Customoitu käyttäjäserializer joka perustuu CustomUser modelliin models.py
@@ -11,6 +13,7 @@ class CustomUserSerializer(ModelSerializer):
         model = CustomUser
         fields = ['id','email','username']
 
+#Tunnukset email + salasana
 #Tunnusten luonti
 class RegisterUserSerializer(ModelSerializer):
     class Meta:
@@ -18,12 +21,23 @@ class RegisterUserSerializer(ModelSerializer):
         fields = ['email','username','password']
         extra_kwargs = {'password':{'write_only':True}}
 
-        def create(self, valitaded_data):
-            user = CustomUser.objects.create_user(**valitaded_data)
+    def create(self, valitaded_data):
+        user = CustomUser.objects.create_user(**valitaded_data)
+        return user
+
+#Kirjautuminen
+class LoginUserSerializer(Serializer):
+    email = serializers.EmailField(required=True)
+    password = serializers.CharField(write_only=True)
+    
+    def validate(self, data):
+        user = authenticate(**data)
+        if user and user.is_active:
             return user
+        raise serializers.ValidationError("Incorrect credentials!")
 
 
-# Foorumi
+# Foorumi luokkien serializerit
 class AihealueSerializer(serializers.ModelSerializer):
     class Meta:
         model = Aihealue

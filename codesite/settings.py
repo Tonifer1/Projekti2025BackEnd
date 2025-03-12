@@ -34,40 +34,42 @@ ALLOWED_HOSTS = [
 
 
 
-#jos CAC == True niin tulee olla määritetyt originit
+ #jos CAC == True niin tulee olla määritetyt originit
 CSRF_TRUSTED_ORIGINS = ['https://*.azurewebsites.net',
-                        'https://codesitebe-efgshggehucfdvhq.swedencentral-01.azurewebsites.net',     #azure täytyy olla
-                        'http://localhost:3000']
+                         'https://codesitebe-efgshggehucfdvhq.swedencentral-01.azurewebsites.net',     #azure täytyy olla
+                         'http://localhost:3000']
 
-#CORS_ALLOW_ALL_ORIGINS = True
+# #CORS_ALLOW_ALL_ORIGINS = True
 
-CORS_ALLOWED_ORIGINS = [
-   "http://localhost:5173",
-    "https://codesitebe-efgshggehucfdvhq.swedencentral-01.azurewebsites.net",
-]
+# CORS_ALLOWED_ORIGINS = [
+#    "http://localhost:5173",
+#     "https://codesitebe-efgshggehucfdvhq.swedencentral-01.azurewebsites.net",
+# ]
 
 
-CORS_ALLOW_CREDENTIALS = True
+# CORS_ALLOW_CREDENTIALS = True
 
 
 # Application definition
 
 INSTALLED_APPS = [
+    'corsheaders',
+    'rest_framework_simplejwt.token_blacklist',
+    'rest_framework_simplejwt',
+    'rest_framework',
+    'codesitemainapp',
+    'codesite',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'codesitemainapp',
-    'rest_framework',
-    'corsheaders',
-    'codesite',
-       
 ]
 
 MIDDLEWARE = [
-    'corsheaders.middleware.CorsMiddleware',                 #paras yhteensopivuus kun ylimpänä
+     "corsheaders.middleware.CorsMiddleware",
+    "django.middleware.common.CommonMiddleware",
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -156,48 +158,26 @@ STATIC_ROOT = 'static'
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
+
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'codesitemainapp.CustomUser'
-
-
-
-#Autentikaatio asetukset tähän alle
-#cookies
+#res
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': [
+
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+    
         'codesitemainapp.authentication.CookieJWTAuthentication',
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
-    ],
+    )
+
 }
 
 #token jwt
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=15),  # Käyttäjän tokenin voimassaoloaika
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),     # Refresh-tokenin voimassaoloaika
-    'ROTATE_REFRESH_TOKENS': True,                  # Luo uusi refresh-token käytettäessä
-    'BLACKLIST_AFTER_ROTATION': True,               # Vanha refresh-token mitätöityy
-    'AUTH_HEADER_TYPES': ('Bearer',),               # Käytä "Bearer" -headeria ei tarvita kun evästeet käytössä
-    
-    #lisätään muutama määritys 
-    'AUTH_COOKIE': 'access_token',      # Evästeen nimi
-    "AUTH_COOKIE_REFRESH": 'refresh',  # Refresh-token evästeessä
-    'AUTH_COOKIE_HTTP_ONLY': True,      # Vain HTTP-käyttö (ei JS)
-    'AUTH_COOKIE_SECURE': True,         # HTTPS-vaatimus
-    'AUTH_COOKIE_SAMESITE': 'None',     # Tarvitaan, jos React pyytää cross-origin localhost ajossa vaihda 'Lax'
-    "AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.tokens.AccessToken",)
-}   
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=0.2),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
+    "ROTATE_REFRESH_TOKENS": False,
+    "BLACKLIST_AFTER_ROTATION": False,
+}
 
-
-#Autentikaatio asetus osion loppu
-
-#Lisä asetukset 1 start CORS CSRF COOKIES  
-CSRF_COOKIE_HTTPONLY = False  # Salli JavaScriptin käyttää CSRF-evästettä
-CSRF_COOKIE_SECURE = True  # Pakottaa HTTPS-yhteyden (Azure)
-CORS_ALLOW_CREDENTIALS = True  # Salli evästeet ja JWT-kirjautuminen
-CSRF_COOKIE_SAMESITE = 'None'
-#Lisä asetukset 1 end
-
-#Lisä asetukset 2 start
-SESSION_COOKIE_SAMESITE = 'None'  # Tarvitaan cross-origin-pyynnöissä
-SESSION_COOKIE_SECURE = True  # Sama HTTPS-vaatimus sessioevästeille
-#Lisä asetukset 2 end
+CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_CREDENTIALS = True
