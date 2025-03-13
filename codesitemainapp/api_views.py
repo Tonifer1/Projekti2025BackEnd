@@ -69,6 +69,10 @@ class LogoutView(APIView):
         response = Response({"message": "Successfully logged out!"}, status=status.HTTP_200_OK)
         response.delete_cookie("access_token")
         response.delete_cookie("refresh_token")
+        #pakotetaan selain poistamaan kaikki
+        response["Cache-Control"] = "no-store, no-cache, must-revalitade, max-age=0"
+        response["Pragma"] = "no-cache"
+        response["Expires"] = "0"
         
         return response    
 
