@@ -1,9 +1,3 @@
-API päätepisteet
+Dokumentaatio
 
-codesitebe-efgshggehucfdvhq.swedencentral-01.azurewebsites.net/api/Aiheet/
-
-codesitebe-efgshggehucfdvhq.swedencentral-01.azurewebsites.net/api/Ketjut/
-
-codesitebe-efgshggehucfdvhq.swedencentral-01.azurewebsites.net/api/Vastaukset/
-
-codesitebe-efgshggehucfdvhq.swedencentral-01.azurewebsites.net/api/Notes/
+https://documenter.getpostman.com/view/39453308/2sAYk8w3kn
