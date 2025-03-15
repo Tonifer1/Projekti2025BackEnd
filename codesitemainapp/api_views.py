@@ -13,6 +13,8 @@ from .models import Aihealue, Ketju, Vastaus, Notes
 from rest_framework.permissions import IsAuthenticated, AllowAny, BasePermission, IsAdminUser
 from .permissions import IsAdminOrSuperuser  # Tuotu erillisestä permissions-tiedostosta
 from rest_framework import status, viewsets, permissions
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import never_cache
 
 # API Controllerit
 
@@ -55,7 +57,7 @@ class LoginView(APIView):
         return Response( serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
 class LogoutView(APIView):
-    
+    @method_decorator(never_cache)
     def post(self, request):
         refresh_token = request.COOKIES.get("refresh_token")
         
@@ -67,14 +69,16 @@ class LogoutView(APIView):
                 return Response({"error":"Error invalidating token:" + str(e) }, status=status.HTTP_400_BAD_REQUEST)
         
         response = Response({"message": "Successfully logged out!"}, status=status.HTTP_200_OK)
-        response.delete_cookie("access_token")
-        response.delete_cookie("refresh_token")
+
+        response.set_cookie(key="access_token", value="", httponly=True, secure=True, samesite="None", max_age=0)
+        response.set_cookie(key="refresh_token", value="", httponly=True, secure=True, samesite="None", max_age=0)
+        
         #pakotetaan selain poistamaan kaikki
         response["Cache-Control"] = "no-store, no-cache, must-revalitade, max-age=0"
         response["Pragma"] = "no-cache"
         response["Expires"] = "0"
         
-        return response    
+        return response     
 
 class CookieTokenRefreshView(TokenRefreshView):
     def post(self, request):
