@@ -29,7 +29,8 @@ DEBUG = os.getenv("DEBUG")
 ALLOWED_HOSTS = [
     'localhost', 
     '127.0.0.1',
-    'codesitebe-efgshggehucfdvhq.swedencentral-01.azurewebsites.net'
+    'codesitebe-efgshggehucfdvhq.swedencentral-01.azurewebsites.net',
+    'blue-wave-09f686903.6.azurestaticapps.net'
     ]  #muutetttu * ---> tarkemmat määritykset
 
 # #jos CAC == True niin tulee olla määritetyt originit
