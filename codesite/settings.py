@@ -39,7 +39,7 @@ ALLOWED_HOSTS = [
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
      "https://codesitebe-efgshggehucfdvhq.swedencentral-01.azurewebsites.net",
-     "https://blue-wave-09f686903.6.azurestaticapps.net/login"
+     "https://blue-wave-09f686903.6.azurestaticapps.net"
  ]
 
 
