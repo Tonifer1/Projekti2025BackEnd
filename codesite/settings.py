@@ -26,25 +26,25 @@ DEBUG = os.getenv("DEBUG")
 
 # SECURITY WARNING: In production, allow only those domains which you trust.
 #REST CORS ja sallitut domainit
-ALLOWED_HOSTS = [
-    'localhost', 
-    '127.0.0.1',
-    'codesitebe-efgshggehucfdvhq.swedencentral-01.azurewebsites.net',
-    'blue-wave-09f686903.6.azurestaticapps.net'
-    ]  #muutetttu * ---> tarkemmat määritykset
+# ALLOWED_HOSTS = [
+#     'localhost', 
+#     '127.0.0.1',
+#     'codesitebe-efgshggehucfdvhq.swedencentral-01.azurewebsites.net',
+#     'blue-wave-09f686903.6.azurestaticapps.net'
+#     ]  #muutetttu * ---> tarkemmat määritykset
 
-# #jos CAC == True niin tulee olla määritetyt originit
-# #CORS_ALLOW_ALL_ORIGINS = True
+ALLOWED_HOSTS = ['*']
 
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5173",
-     "https://codesitebe-efgshggehucfdvhq.swedencentral-01.azurewebsites.net",
-     "https://blue-wave-09f686903.6.azurestaticapps.net"
- ]
+# #jos CAC == True niin tulee olla määritetyt originit ?
+CORS_ALLOW_ALL_ORIGINS = True
 
+# CORS_ALLOWED_ORIGINS = [
+#     "http://localhost:5173",
+#      "https://codesitebe-efgshggehucfdvhq.swedencentral-01.azurewebsites.net",
+#      "https://blue-wave-09f686903.6.azurestaticapps.net"
+#  ]
 
 CORS_ALLOW_CREDENTIALS = True
-
 
 # Application definition
 
