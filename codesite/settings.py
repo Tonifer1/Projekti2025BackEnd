@@ -10,6 +10,14 @@ mimetypes.add_type("text/css", ".css", True)
 
 #käytetään dotenv tiedostoa tuomaan sensitiivistä dataa. 
 #dotenv ei pushata git repoon
+
+# Haetaan projektin juuri
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+# Määritellään .env-tiedoston polku ja ladataan se
+ENV_PATH = os.path.join(BASE_DIR, ".env")
+load_dotenv(ENV_PATH)
+
 load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -19,7 +27,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv("SECRET_KEY")
+SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
+
+# Testataan, latautuuko muuttujat oikein
+if not SECRET_KEY:
+    raise ValueError("❌ SECRET_KEY not found! Check your .env file.")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv("DEBUG")
@@ -102,11 +114,11 @@ WSGI_APPLICATION = 'codesite.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'mssql',
-        'NAME': os.getenv("DB_NAME"),
-        'HOST': os.getenv("DB_HOST"),
-        'USER': os.getenv("DB_USER"),
-        'PASSWORD': os.getenv("DB_PASS"),
-        'PORT' : '1433',
+        'NAME': os.getenv("DATABASE_NAME"),
+        'HOST': os.getenv("DATABASE_HOST"),
+        'USER': os.getenv("DATABASE_USER"),
+        'PASSWORD': os.getenv("DATABASE_PASSWORD"),
+        'PORT': os.getenv("DATABASE_PORT"),
         'OPTIONS': {
 	            'driver': 'ODBC Driver 17 for SQL Server',
 	        },
