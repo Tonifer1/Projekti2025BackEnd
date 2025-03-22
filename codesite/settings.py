@@ -1,4 +1,4 @@
-#Asetukset, lisä huomautukset tiedoston lopussa.
+#Asetukset, lisähuomautukset tiedoston lopussa.
 import os
 from pathlib import Path
 from datetime import timedelta
@@ -12,11 +12,11 @@ mimetypes.add_type("text/css", ".css", True)
 #dotenv ei pushata git repoon
 
 # Haetaan projektin juuri
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+# BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Määritellään .env-tiedoston polku ja ladataan se
-ENV_PATH = os.path.join(BASE_DIR, ".env")
-load_dotenv(ENV_PATH)
+# ENV_PATH = os.path.join(BASE_DIR, ".env")
+# load_dotenv(ENV_PATH)
 
 load_dotenv()
 
