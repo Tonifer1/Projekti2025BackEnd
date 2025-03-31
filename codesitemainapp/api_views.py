@@ -2,19 +2,30 @@ from django.shortcuts import render
 from rest_framework.generics import RetrieveUpdateAPIView, CreateAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
-from .serializers import AihealueSerializer, KetjuSerializer, VastausSerializer, NotesSerializer, CustomUserSerializer, RegisterUserSerializer, LoginUserSerializer
+from rest_framework import status, viewsets, permissions
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.response import Response
-from rest_framework import status
 from rest_framework_simplejwt.views import TokenRefreshView
 from rest_framework_simplejwt.exceptions import InvalidToken
-from .models import Aihealue, Ketju, Vastaus, Notes
 from rest_framework.permissions import IsAuthenticated, AllowAny, BasePermission, IsAdminUser
+
 from .permissions import IsAdminOrSuperuser  # Tuotu erillisestä permissions-tiedostosta
-from rest_framework import status, viewsets, permissions
+from .models import Aihealue, Ketju, Vastaus, Notes, CustomUser
+from .serializers import AihealueSerializer, KetjuSerializer, VastausSerializer, NotesSerializer, CustomUserSerializer, RegisterUserSerializer, LoginUserSerializer, PasswordResetSerializer
+
 from django.utils.decorators import method_decorator
+from django.utils.encoding import force_bytes
 from django.views.decorators.cache import never_cache
+from django.core.mail import send_mail
+from django.template.loader import render_to_string
+from django.utils.http import urlsafe_base64_encode
+
+from django.contrib.auth.models import User
+from django.contrib.auth.tokens import default_token_generator  #lyhyt kestoinen palautukseen tarkoitettu auth token
+from django.contrib.auth.views import PasswordResetCompleteView
+from django.shortcuts import redirect
+from django.contrib import messages
 
 # API Controllerit
 
@@ -101,6 +112,38 @@ class CookieTokenRefreshView(TokenRefreshView):
             return response
         except InvalidToken:
             return Response({"error":"Invalid token"}, status=status.HTTP_401_UNAUTHORIZED)
+        
+#salasanan palautus
+class PasswordResetAPIView(APIView):
+    def post(self, request):
+        serializer = PasswordResetSerializer(data=request.data)
+        if serializer.is_valid():
+            email = serializer.validated_data['email']
+            user = CustomUser.objects.get(email=email)
+
+            # Tokenin ja UID:n luonti
+            token = default_token_generator.make_token(user)
+            uid = urlsafe_base64_encode(force_bytes(user.pk))
+
+            # Salasanan palautuslinkki
+            reset_link = f"http://127.0.0.1:8000/reset/{uid}/{token}/"   #muuta azureen sopivaksi
+            mail_subject = 'Salasanan palautuspyyntö'
+            message = render_to_string('reset_password_email.html', {
+                'user': user,
+                'reset_link': reset_link,
+            })
+
+            # Sähköpostin lähetys
+            send_mail(mail_subject, message, 'admin@gmail.com', [email])
+
+            return Response({"message": "Salasanan palautuslinkki on lähetetty sähköpostiin."}, status=status.HTTP_200_OK)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+class CustomPasswordResetCompleteView(PasswordResetCompleteView):
+    def get(self, request, *args, **kwargs):
+        messages.add_message(request, messages.SUCCESS, 'Salasanan palautus oli onnistunut. Voit kirjautua sisään uudella salasanallasi.')
+        return redirect("/admin/login/?next=/admin/")
           
 
 # Foorumi alue controllerit
@@ -109,18 +152,25 @@ class AihealueViewSet(viewsets.ModelViewSet):
     serializer_class = AihealueSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsAdminOrSuperuser]  # Aiheiden luonti vain adminin luvilla
 
-    def perform_create(self, serializer):
-        serializer.save(author=self.request.user)    #asettaa kirjautuneen käyttäjän luojaksi 
-
 
 # Foorumin ketjut jotka lisätään aihealueen alle
 class KetjuViewSet(viewsets.ModelViewSet):
-    queryset = Ketju.objects.all()
+    queryset = Ketju.objects.all()  # Tämä määrittää, mitä tietoja haetaan
     serializer_class = KetjuSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-    
+
     def perform_create(self, serializer):
-        serializer.save(author=self.request.user)   #asettaa kirjautuneen käyttäjän luojaksi 
+        serializer.save(author=self.request.user) 
+    
+    def get_queryset(self):
+        queryset = Ketju.objects.all()
+        
+        # Suodatetaan 'aihealue' parametrin mukaan
+        aihealue = self.request.query_params.get('aihealue', None)
+        if aihealue:
+            queryset = queryset.filter(aihealue=aihealue)
+        
+        return queryset
 
 
 #Ketjujen yksittäiset vastaukset (reply)
@@ -130,7 +180,7 @@ class VastausViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def perform_create(self, serializer):
-        serializer.save(kayttaja=self.request.user)
+        serializer.save(replier=self.request.user)
 
 #Notes osio
 class NoteViewSet(viewsets.ModelViewSet):
