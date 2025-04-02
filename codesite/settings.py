@@ -199,3 +199,12 @@ EMAIL_HOST_PASSWORD = os.getenv("EM_PASSWORD")
 
 # Authentication
 AUTHENTICATION_BACKENDS = ['django.contrib.auth.backends.ModelBackend']
+# Käytetään SQLitea testauksen aikana, jotta vältetään SQL Serverin token_id -ongelmat,  Valter Backström 
+import sys
+if 'test' in sys.argv:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': ':memory:',
+        }
+    }
