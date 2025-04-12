@@ -31,6 +31,11 @@ jobs:
       
       - name: Install dependencies
         run: pip install -r requirements.txt
+
+      - name: Run Django tests
+        run: |
+          python manage.py test
+
         
       # Optional: Add step to run tests here (PyTest, Django test suites, etc.)
 
