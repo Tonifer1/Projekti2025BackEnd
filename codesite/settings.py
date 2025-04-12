@@ -34,7 +34,8 @@ if not SECRET_KEY:
     raise ValueError("❌ SECRET_KEY not found! Check your .env file.")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv("DEBUG")
+DEBUG = os.getenv("DEBUG") == "True"
+
 
 # SECURITY WARNING: In production, allow only those domains which you trust.
 #REST CORS ja sallitut domainit
