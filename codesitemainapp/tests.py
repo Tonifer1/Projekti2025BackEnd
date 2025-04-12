@@ -4,7 +4,7 @@ from .models import Aihealue, Ketju, Vastaus, Notes, Tags
 
 User = get_user_model()
 
-#Tests by Valter
+#Tests by Valter Backstrom
 # Tests for the Forum models
 class ForumModelTests(TestCase):
 
