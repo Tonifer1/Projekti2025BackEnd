@@ -2,7 +2,7 @@
 import os
 from pathlib import Path
 from datetime import timedelta
-
+import sys
 from pathlib import Path
 from dotenv import load_dotenv
 import mimetypes
@@ -27,12 +27,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY")
+if "test" in sys.argv:
+    # Testejä ajetaan → käytetään erillistä testisalasanaa
+    SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "test-key-12345")
+else:
+    # Normaalikäyttö tai deploy → käytetään fallbackia jos SECRET_KEY puuttuu
+    SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "fallback-key-for-ci")
 
-
-# Testataan, latautuuko muuttujat oikein
-if not SECRET_KEY:
-    raise ValueError("❌ SECRET_KEY not found! Check your .env file.")
+    if SECRET_KEY == "fallback-key-for-ci":
+        print("⚠️ Warning: SECRET_KEY not found in environment! Using fallback value.")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv("DEBUG") == "True"
