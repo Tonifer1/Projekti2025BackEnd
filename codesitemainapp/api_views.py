@@ -12,7 +12,7 @@ from rest_framework.permissions import IsAuthenticated, AllowAny, BasePermission
 
 from .permissions import IsAdminOrSuperuser  # Tuotu erillisestä permissions-tiedostosta
 from .models import Aihealue, Ketju, Vastaus, Notes, CustomUser
-from .serializers import AihealueSerializer, KetjuSerializer, VastausSerializer, NotesSerializer, CustomUserSerializer, RegisterUserSerializer, LoginUserSerializer, PasswordResetSerializer
+from .serializers import AihealueSerializer, KetjuSerializer, VastausSerializer, NotesSerializer, CustomUserSerializer, RegisterUserSerializer, LoginUserSerializer, PasswordResetSerializer, PasswordResetConfirmSerializer
 
 from django.utils.decorators import method_decorator
 from django.utils.encoding import force_bytes
@@ -114,6 +114,7 @@ class CookieTokenRefreshView(TokenRefreshView):
             return Response({"error":"Invalid token"}, status=status.HTTP_401_UNAUTHORIZED)
         
 #salasanan palautus
+
 class PasswordResetAPIView(APIView):
     def post(self, request):
         serializer = PasswordResetSerializer(data=request.data)
@@ -126,7 +127,8 @@ class PasswordResetAPIView(APIView):
             uid = urlsafe_base64_encode(force_bytes(user.pk))
 
             # Salasanan palautuslinkki
-            reset_link = f"https://projekti2025backend-e0dubhd7e5h6akcw.swedencentral-01.azurewebsites.net/reset/{uid}/{token}/"   #muuta azureen sopivaksi
+            reset_link = f"https://blue-wave-09f686903.6.azurestaticapps.net/reset-password-form/{uid}/{token}/"
+
             mail_subject = 'Salasanan palautuspyyntö'
             message = render_to_string('reset_password_email.html', {
                 'user': user,
@@ -139,11 +141,19 @@ class PasswordResetAPIView(APIView):
             return Response({"message": "Salasanan palautuslinkki on lähetetty sähköpostiin."}, status=status.HTTP_200_OK)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
+
+class PasswordResetConfirmAPIView(APIView):
+    def post(self, request):
+        serializer = PasswordResetConfirmSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"message": "Salasana vaihdettu onnistuneesti."}, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 class CustomPasswordResetCompleteView(PasswordResetCompleteView):
     def get(self, request, *args, **kwargs):
         messages.add_message(request, messages.SUCCESS, 'Salasanan palautus oli onnistunut. Voit kirjautua sisään uudella salasanallasi.')
-        return redirect("/admin/login/?next=/admin/")
+
           
 
 # Foorumi alue controllerit
@@ -155,7 +165,7 @@ class AihealueViewSet(viewsets.ModelViewSet):
 
 # Foorumin ketjut jotka lisätään aihealueen alle
 class KetjuViewSet(viewsets.ModelViewSet):
-    queryset = Ketju.objects.all()  # Tämä määrittää, mitä tietoja haetaan
+    queryset = Ketju.objects.all().order_by('-created') # Tämä määrittää, mitä tietoja haetaan
     serializer_class = KetjuSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
